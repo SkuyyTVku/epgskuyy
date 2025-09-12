@@ -1,7 +1,7 @@
 import requests
 import lxml.etree as ET
 
-# Daftar URL sumber EPG yang valid
+# Daftar URL sumber EPG
 sources = {
     "MACANTV": "https://cdn.macan.tv/epgtv.xml",
     "ZOZOTV": "https://link.zozotv.xyz/epgtvku.xml"
@@ -30,21 +30,25 @@ def merge_epg():
 
         for elem in xml_data:
             if elem.tag == "channel" and "id" in elem.attrib:
-                # Ganti 'MACANTV' atau 'ZOZOTV' menjadi 'SKUYYTV' di channel ID
-                elem.attrib["id"] = elem.attrib["id"].replace("MACANTV", "SKUYYTV").replace("ZOZOTV", "SKUYYTV")
+                # Ganti .MACAN -> .SKUYY
+                if elem.attrib["id"].endswith("MACAN"):
+                    elem.attrib["id"] = elem.attrib["id"].replace("MACAN", "SKUYY")
 
-            if elem.tag == "programme" and "channel" in elem.attrib:
-                # Ambil judul program dan ganti 'MACANTV' atau 'ZOZOTV' jadi 'SKUYYTV'
+            if elem.tag == "programme":
+                # Ubah channel attribute
+                if "channel" in elem.attrib and elem.attrib["channel"].endswith("MACAN"):
+                    elem.attrib["channel"] = elem.attrib["channel"].replace("MACAN", "SKUYY")
+
+                # Ubah title (MACANTV) -> (SKUYYTV)
                 title_elem = elem.find("title")
-                title_text = title_elem.text if title_elem is not None else "NOPROG"
-                suffix = f"SKUYYTV_{title_text.replace(' ', '_')}"
-                elem.attrib["channel"] = elem.attrib["channel"].replace("MACANTV", "SKUYYTV").replace("ZOZOTV", "SKUYYTV") + f".{suffix}"
+                if title_elem is not None and title_elem.text:
+                    title_elem.text = title_elem.text.replace("(MACANTV)", "(SKUYYTV)")
 
             root.append(elem)
 
     tree = ET.ElementTree(root)
     tree.write(output_file, encoding="utf-8", xml_declaration=True)
-    print(f"Selesai gabung, hasil: {output_file}")
+    print(f"Selesai gabung, hasil disimpan di: {output_file}")
 
 if __name__ == "__main__":
     merge_epg()
