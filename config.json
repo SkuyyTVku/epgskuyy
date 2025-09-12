@@ -1,7 +1,6 @@
 {
   "sources": [
-    { "url": "https://cdn.macan.tv/epgtv.xml", "name": "MACANTV" },
-    { "url": "https://link.zozotv.xyz/epgtvku.xml", "name": "ZozoTV" }
+    { "url": "https://data.skuyytv.xyz/iptveditor", "name": "IPTVEDITOR" }
   ],
   "output": "./epgtvku.xml"
 }
