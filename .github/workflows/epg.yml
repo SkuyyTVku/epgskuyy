@@ -20,7 +20,7 @@ jobs:
         run: pip install requests lxml
 
       - name: Grab & Merge EPG
-        run: python grab_epg.py
+        run: python epg-auto/grab_epg.py
 
       - name: Commit & Push epgtv.xml
         run: |
