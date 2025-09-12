@@ -1,42 +1,52 @@
-import datetime
-import os
+import requests
+import lxml.etree as ET
 
-# URL provider (dummy untuk contoh)
-PROVIDER_URLS = {
-    "IndiHome": "http://www.indihometv.com",
-    "Sooka": "http://www.sooka.my",
-    "VisionPlus": "http://www.mncvision.id",
-    "FirstMedia": "http://www.firstmedia.com"
+# Daftar URL sumber EPG
+sources = {
+    "IndiHome": "http://www.indihometv.com/epg.xml",
+    "Sooka": "http://www.sooka.my/epg.xml",
+    "VisionPlus": "http://www.mncvision.id/epg.xml",
+    "FirstMedia": "http://www.firstmedia.com/epg.xml"
 }
 
-SUFFIX = "(SKUYYTV)"
-CHANNEL_IDS = {
-    "IndiHome": "IndiHome.SKUYY",
-    "Sooka": "Sooka.SKUYY",
-    "VisionPlus": "VisionPlus.SKUYY",
-    "FirstMedia": "FirstMedia.SKUYY"
-}
+# File output
+output_file = "epgtv.xml"
 
-def generate_dummy_xml(provider, url):
-    now = datetime.datetime.utcnow().strftime("%Y%m%d%H%M%S")
-    xml = f"""<?xml version="1.0" encoding="UTF-8"?>
-<tv generator-info-name="EPG Auto">
-  <channel id="{CHANNEL_IDS[provider]}">
-    <display-name>{provider}</display-name>
-  </channel>
-  <programme start="{now}" stop="{now}" channel="{CHANNEL_IDS[provider]}">
-    <title>{provider} Jadwal Dummy {SUFFIX}</title>
-    <desc>EPG dummy dari {url}</desc>
-  </programme>
-</tv>
-"""
-    return xml
+def fetch_xml(url):
+    """Download dan parse XML dari URL"""
+    try:
+        print(f"Fetching {url} ...")
+        r = requests.get(url, timeout=30)
+        r.raise_for_status()
+        return ET.fromstring(r.content)
+    except Exception as e:
+        print(f"Gagal ambil {url}: {e}")
+        return None
 
-os.makedirs("epg", exist_ok=True)
+def merge_epg():
+    # Root XMLTV
+    root = ET.Element("tv")
 
-for provider, url in PROVIDER_URLS.items():
-    xml = generate_dummy_xml(provider, url)
-    with open(f"epg/{provider.lower()}.xml", "w", encoding="utf-8") as f:
-        f.write(xml)
+    for provider, url in sources.items():
+        xml_data = fetch_xml(url)
+        if xml_data is None:
+            continue
 
-print("EPG dummy berhasil dibuat.")
+        # Copy semua elemen channel & programme
+        for elem in xml_data:
+            # Tambahkan suffix provider ke channel id biar unik
+            if elem.tag == "channel" and "id" in elem.attrib:
+                elem.attrib["id"] = elem.attrib["id"] + f".{provider.upper()}"
+
+            if elem.tag == "programme" and "channel" in elem.attrib:
+                elem.attrib["channel"] = elem.attrib["channel"] + f".{provider.upper()}"
+
+            root.append(elem)
+
+    # Simpan ke file
+    tree = ET.ElementTree(root)
+    tree.write(output_file, encoding="utf-8", xml_declaration=True)
+    print(f"Selesai gabung, hasil: {output_file}")
+
+if __name__ == "__main__":
+    merge_epg()
