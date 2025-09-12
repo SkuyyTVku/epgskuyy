@@ -2,12 +2,16 @@ name: Update EPG
 
 on:
   schedule:
-    - cron: "0 20 * * *"   # jalan tiap jam 3 pagi WIB
-  workflow_dispatch:        # bisa dijalankan manual
+    - cron: "0 20 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write  # ✅ ini yang penting
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v3
 
