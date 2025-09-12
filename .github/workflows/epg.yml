@@ -26,7 +26,7 @@ jobs:
       - name: Grab & Merge EPG
         run: python grab_epg.py
 
-      - name: Commit & Push epgtv.xml
+      - name: Commit & Push epgtvku.xml
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "actions@github.com"
