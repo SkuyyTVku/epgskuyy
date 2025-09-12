@@ -3,8 +3,8 @@ import lxml.etree as ET
 
 # Daftar URL sumber EPG yang valid
 sources = {
-    "SKUYYTV": "https://cdn.macan.tv/epgtv.xml",  # Ganti MACANTV ke SKUYYTV
-    "SKUYYTV": "https://link.zozotv.xyz/epgtvku.xml"  # Ganti ZOZOTV ke SKUYYTV
+    "MACANTV": "https://cdn.macan.tv/epgtv.xml",
+    "ZOZOTV": "https://link.zozotv.xyz/epgtvku.xml"
 }
 
 output_file = "epgtv.xml"
