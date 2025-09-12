@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tv generator-info-name="EPG Dummy">
+  <channel id="Firstmedia.SKUYY">
+    <display-name>Firstmedia</display-name>
+  </channel>
+  <programme start="20250101000000" stop="20250101010000" channel="Firstmedia.SKUYY">
+    <title>Program Dummy (SKUYY)</title>
+    <desc>Ini hanya dummy awal, akan diganti otomatis.</desc>
+  </programme>
+</tv>
