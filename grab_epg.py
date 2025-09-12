@@ -1,15 +1,12 @@
 import requests
 import lxml.etree as ET
 
-# Daftar URL sumber EPG
+# Daftar URL sumber EPG yang valid
 sources = {
-    "IndiHome": "http://www.indihometv.com/epg.xml",
-    "Sooka": "http://www.sooka.my/epg.xml",
-    "VisionPlus": "http://www.mncvision.id/epg.xml",
-    "FirstMedia": "http://www.firstmedia.com/epg.xml"
+    "MACANTV": "https://cdn.macan.tv/epgtv.xml",
+    "ZOZOTV": "https://link.zozotv.xyz/epgtvku.xml"
 }
 
-# File output
 output_file = "epgtv.xml"
 
 def fetch_xml(url):
@@ -24,7 +21,6 @@ def fetch_xml(url):
         return None
 
 def merge_epg():
-    # Root XMLTV
     root = ET.Element("tv")
 
     for provider, url in sources.items():
@@ -32,18 +28,13 @@ def merge_epg():
         if xml_data is None:
             continue
 
-        # Copy semua elemen channel & programme
         for elem in xml_data:
-            # Tambahkan suffix provider ke channel id biar unik
             if elem.tag == "channel" and "id" in elem.attrib:
-                elem.attrib["id"] = elem.attrib["id"] + f".{provider.upper()}"
-
+                elem.attrib["id"] = elem.attrib["id"] + f".{provider}"
             if elem.tag == "programme" and "channel" in elem.attrib:
-                elem.attrib["channel"] = elem.attrib["channel"] + f".{provider.upper()}"
-
+                elem.attrib["channel"] = elem.attrib["channel"] + f".{provider}"
             root.append(elem)
 
-    # Simpan ke file
     tree = ET.ElementTree(root)
     tree.write(output_file, encoding="utf-8", xml_declaration=True)
     print(f"Selesai gabung, hasil: {output_file}")
