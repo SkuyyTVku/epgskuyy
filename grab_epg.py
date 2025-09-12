@@ -7,7 +7,7 @@ sources = {
     "ZOZOTV": "https://link.zozotv.xyz/epgtvku.xml"
 }
 
-output_file = "epgtv.xml"
+output_file = "epgtvku.xml"
 
 def fetch_xml(url):
     """Download dan parse XML dari URL"""
