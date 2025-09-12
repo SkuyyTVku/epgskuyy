@@ -1,9 +1,7 @@
 {
   "sources": [
-    { "url": "./epg/indihome.xml", "name": "IndiHome" },
-    { "url": "./epg/sooka.xml", "name": "Sooka" },
-    { "url": "./epg/visionplus.xml", "name": "VisionPlus" },
-    { "url": "./epg/firstmedia.xml", "name": "FirstMedia" }
+    { "url": "https://cdn.macan.tv/epgtv.xml", "name": "MACANTV" },
+    { "url": "https://link.zozotv.xyz/epgtvku.xml", "name": "ZozoTV" }
   ],
   "output": "./epgtv.xml"
 }
