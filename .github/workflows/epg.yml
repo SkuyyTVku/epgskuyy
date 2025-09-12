@@ -2,8 +2,8 @@ name: Update EPG
 
 on:
   schedule:
-    - cron: "0 20 * * *"  # otomatis tiap jam 3 pagi WIB
-  workflow_dispatch:
+    - cron: "0 20 * * *"   # jalan tiap jam 3 pagi WIB
+  workflow_dispatch:        # bisa dijalankan manual
 
 jobs:
   build:
@@ -16,21 +16,13 @@ jobs:
         with:
           python-version: 3.x
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
+      - name: Install dependencies
+        run: pip install requests lxml
 
-      - name: Install epg-merger
-        run: npm install -g epg-merger
-
-      - name: Grab EPG
+      - name: Grab & Merge EPG
         run: python grab_epg.py
 
-      - name: Merge EPG
-        run: epg-merger -c config.json
-
-      - name: Commit & push epgtv.xml
+      - name: Commit & Push epgtv.xml
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "actions@github.com"
